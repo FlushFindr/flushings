@@ -7,10 +7,4 @@ const pool = mysql.createPool({
   database: process.env.dbname,
 });
 
-if (pool) {
-  console.log("connected");
-} else {
-  console.log("connection failed");
-}
-
 module.exports = pool;

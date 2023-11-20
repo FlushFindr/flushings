@@ -16,6 +16,17 @@ const containerStyle = {
     height: '600px'
 };
 
+interface Marker {
+    name: string,
+    position: {
+      lat: number;
+      lng: number;
+    };
+    direction: string;
+    information:{
+    }
+  }
+
 
 function MyComponent(props) {
 
@@ -24,7 +35,7 @@ function MyComponent(props) {
         lng: -38.523
     });
     const [map, setMap] = useState(null);
-    const [markers, setMarkers] = useState([]);
+    const [markers, setMarkers] = useState<Marker[]>([]);
 
     const onSuccess = location => {
         const newLocation = {
@@ -61,11 +72,12 @@ function MyComponent(props) {
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: process.env.GOOGLMAPS_KEY as string,
+        googleMapsApiKey: "AIzaSyCp-TCSo3qjL7rlDEze1RfV8fzAF8gK4iM",
+        // googleMapsApiKey: process.env.GOOGLMAPS_KEY as string,
     }); 
 
     const getPins = async (location) => {
-        console.log('gettiog pins invoked in the frontend',location)
+        // console.log('gettiog pins invoked in the frontend',location)
 
         const baseUrl = '/api/bathrooms';
         const lat = location.lat;
@@ -77,10 +89,29 @@ function MyComponent(props) {
             method: 'GET'
         })
         const parsing = await pins.json()
-        const [...bathrooms] = parsing.rows
+        const bathrooms = parsing.res;
 
         console.log('returned to frontend', bathrooms)
-        setMarkers([...bathrooms])
+        if(bathrooms){
+            const listBathroom: Marker[] = [];
+
+            bathrooms.forEach((bathroom)=>{
+                console.log("making marker",bathroom)
+                const newMarker: Marker = {
+                    // id: generateUniqueId(), // You need a function to generate unique IDs
+                    name: bathroom.name,
+                    position: {
+                        lat: bathroom.latitude,
+                        lng: bathroom.longitude,
+                    },
+                    direction: bathroom.directions,
+                    information: bathroom,
+                };
+                listBathroom.push(newMarker)
+            })
+            setMarkers(listBathroom)
+            console.log('printing state', markers)
+        }
 //setMarkers(currentMarkers => [...currentMarkers, newMarker]);
     }
 
@@ -129,7 +160,10 @@ function MyComponent(props) {
             {markers.map((marker, index) => (
                 <MarkerF key={index} position={marker.position}>
                     <InfoWindowF position={marker.position}>
-                        <div>{marker.comment}</div>
+                        <div style={{ color: 'black' }}>
+                            {marker.name}, 
+                            {/* {marker.direction} */}
+                            </div>
                     </InfoWindowF>
                 </MarkerF>
             ))}
