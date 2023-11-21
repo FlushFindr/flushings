@@ -8,7 +8,7 @@ export async function POST(request: NextRequest){
         const roundLat = lat.toFixed(6)
         const roundLng = lng.toFixed(6)
         const location = information.street
-        console.log('received in the backend for bathstats', name, lat, lng, information)
+        // console.log('received in the backend for bathstats', name, lat, lng, information)
         const res = await db.query(
             `INSERT INTO restrooms (name, latitude, longitude, location)
             SELECT * FROM (SELECT ? AS name, ? AS latitude, ? AS longitude, ? AS location) AS tmp
@@ -25,10 +25,10 @@ export async function POST(request: NextRequest){
                 `
             , [roundLat, roundLng])
     
-            console.log("heres the bathroom you clicked from the backend", bathroomRet)
+            // console.log("heres the bathroom you clicked from the backend", bathroomRet[0][0].restroomID)
             return new Response(JSON.stringify({
                 status:200,
-                res: bathroomRet[0].restroomID
+                res: bathroomRet[0][0].restroomID
             }
             ))
         } catch (error) {

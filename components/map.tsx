@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { GoogleMap, MarkerF, InfoWindowF, useJsApiLoader } from "@react-google-maps/api";
+import RatingForm from "./review";
 
 const containerStyle = { width: '800px', height: '600px' };
 
@@ -18,8 +19,12 @@ interface Marker {
 function MyComponent({ session }) {
   const [center, setCenter] = useState({ lat: -3.745, lng: -38.523 });
   const [markers, setMarkers] = useState<Marker[]>([]);
+  const [showRatingForm, setShowRatingForm] = useState(false);
+  const [userID, setUserID] = useState(null)
+  const [restroomID, setRestRoomID] = useState(null)
   const user = session
-  let userID = null;
+//   let userID= null;
+//   let restroomID = null;
   
 
   useEffect(() => {
@@ -71,7 +76,7 @@ function MyComponent({ session }) {
 
     const checkUser = async () => {
         if(user){
-            console.log('checking if in db')
+            // console.log('checking if in db')
             const res = await fetch("api/user",{
                 method:"POST",
                 headers: {
@@ -86,8 +91,10 @@ function MyComponent({ session }) {
             })
             const parse = await res.json()
             const userDet = parse.res[0].userID
-            console.log("returned should be userid",userDet)
-            userID = userDet
+            // console.log("returned should be userid",userDet)
+            // userID = userDet
+            setUserID(userDet)
+            console.log('user is now set as', userID)
         }else{
             console.timeLog('no need to check')
         }
@@ -111,7 +118,14 @@ function MyComponent({ session }) {
         })
       });
       const data = await response.json();
-      const reviews = data.res;
+      const restroomNumber = data.res;
+    //   console.log('back in the frontend after clicking and heres the results', restroomNumber)
+    //   restroomID=restroomNumber
+      setRestRoomID(restroomNumber)
+      console.log('signed in as',userID, 'with bathroomNumber', restroomID)
+      if (userID !== null) {
+        setShowRatingForm(true);
+      }
     }catch (error) {
         console.error("Error fetching bathroom stats", error);
 
@@ -120,7 +134,6 @@ function MyComponent({ session }) {
 
   return isLoaded ? (
     <div>
-      {/* <button onClick={getPins}>Get Bathrooms Nearby</button> */}
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
@@ -128,12 +141,10 @@ function MyComponent({ session }) {
       >
         {markers.map((marker, index) => (
           <MarkerF key={index} position={marker.position} onClick={()=>showInfo(marker)}>
-            {/* <InfoWindowF position={marker.position}>
-              <div style={{ color: 'black' }}>{marker.name}</div>
-            </InfoWindowF> */}
           </MarkerF>
         ))}
       </GoogleMap>
+      {showRatingForm && userID && <RatingForm userID={userID} restroomID={restroomID}/>}
     </div>
   ) : <p>Loading map...</p>;
 }

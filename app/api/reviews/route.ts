@@ -1,26 +1,26 @@
-// import { NextRequest } from "next/server";
-// import db from "../db"
+import { NextRequest } from "next/server";
+import db from "../db"
 
-// export async function POST(request: NextRequest){
-//     try{
-//         const searchParams = request.nextUrl.searchParams;
-//         const lat = searchParams.get('lat');
-//         const lng = searchParams.get('lng')
-//         const res = await db.query(
-//             `INSERT INTO restrooms (latitude, longitude)
-//              SELECT ?, ?
-//              FROM dual
-//              WHERE NOT EXISTS (
-//                  SELECT 1
-//                  FROM restrooms
-//                  WHERE latitude = ? AND longitude = ?
-//              )`,
-//             [lat, lng, lat, lng]  // Parameters are repeated as they are used twice in the query
-//         );
-//         // const 
+export async function POST(request: NextRequest){
+    try{
+        const body = await request.json();
+
+        //body: JSON.stringify({ userID, restroomID, rating, comment }),
+        const {userID, restroomID, rating, comment} = body
+        console.log(userID,restroomID,rating,comment)
+        const res = await db.query(
+            `INSERT INTO reviews (restroomID,rating,comment,userID)
+            SELECT * FROM (SELECT ? AS restroomID, ? AS rating, ? AS comment, ? AS userID) AS tmp
+            WHERE NOT EXISTS (
+                SELECT 1 FROM reviews WHERE restroomID = ? AND userID = ?
+            ) LIMIT 1;`
+        ,[restroomID,rating,comment, userID, restroomID, userID])
+
+        const reviews = await db.query("SELECT * FROM reviews")
+        console.log(reviews)
 
 
-//     }catch (error){
+    }catch (error){
 
-//     }
-// }
+    }
+}
