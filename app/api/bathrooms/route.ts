@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
           const response = await axios.request(options);
         //   console.log('bathrooms found at our location',response.data);
         const responseData = response.data;
-        console.log('first res for found bathrooms',responseData[0])
+        // console.log('first res for found bathrooms',responseData[0])
         return new Response(
           JSON.stringify({
               status:200,

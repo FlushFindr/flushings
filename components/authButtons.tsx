@@ -10,7 +10,6 @@ export function GoogleSignInButton(){
     const handleClick = async () => {
 
         try {
-            console.log('trying to sign into google', process.env.GOOGLE_ID);
             const result = await signIn("google");
             // Handle the success scenario
             // The result will depend on how you've configured NextAuth

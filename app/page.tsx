@@ -11,7 +11,7 @@ import MyComponent from '@/components/map';
 export default async function Signin() {
   const session = await getServerSession(authConfig);
 
-
+  
 
   return (
     <main>
