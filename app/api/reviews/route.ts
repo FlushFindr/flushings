@@ -16,11 +16,38 @@ export async function POST(request: NextRequest){
             ) LIMIT 1;`
         ,[restroomID,rating,comment, userID, restroomID, userID])
 
-        const reviews = await db.query("SELECT * FROM reviews")
-        console.log(reviews)
-
+        // const reviews = await db.query("SELECT * FROM reviews")
+        // console.log(reviews)
+        return new Response(JSON.stringify({
+            status:200,
+        }))
 
     }catch (error){
+        return new Response(JSON.stringify({
+            status:400,
+            err:"failed to add a review"
+        }))
+    }
+}
 
+export async function GET(request: NextRequest){
+    const searchParams = request.nextUrl.searchParams;
+    const restroomID = searchParams.get('restroomID')
+    // console.log('got the request for this bathroom', restroomID)
+    try {
+        const res = await db.query(
+            `SELECT * FROM reviews
+            WHERE reviews.restroomID=?`
+            ,[restroomID])
+        console.log("found all the reviews for the specific bathroom", res)
+        return new Response(JSON.stringify({
+            status:200,
+            res: res[0]
+        }))
+    } catch (error) {
+        return new Response(JSON.stringify({
+            status:400,
+            err:"failed to get review for this singular bathroom"
+        }))
     }
 }

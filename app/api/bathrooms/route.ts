@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const lat = searchParams.get('lat');
     const lng = searchParams.get('lng')
 
-    // console.log("trying to get all the pbathrooms", lat, lng)
+    console.log("make a rapidapi call")
     //gets the list of public bathrooms 
     const options = {
         method: 'GET',

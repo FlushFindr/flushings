@@ -25,7 +25,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     // console.log('Received in the server POST', body.user.email);
-    // const email
     const res = await db.query(
       `INSERT INTO users(email) VALUES(?) ON DUPLICATE KEY UPDATE email=email`,
       [body.user.email]
@@ -34,7 +33,7 @@ export async function POST(request: NextRequest) {
     [body.user.email]
     );
 
-    console.log('after inserting',user[0])
+    // console.log('after inserting',user[0])
     return new Response(JSON.stringify({
       status:200,
       res: user[0],

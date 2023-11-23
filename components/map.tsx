@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { GoogleMap, MarkerF, InfoWindowF, useJsApiLoader } from "@react-google-maps/api";
-import RatingForm from "./review";
+import RatingForm from "./reviewForm";
+import BathroomReview from "./bathroomReview";
 
 const containerStyle = { width: '800px', height: '600px' };
 
@@ -20,14 +21,16 @@ function MyComponent({ session }) {
   const [center, setCenter] = useState({ lat: -3.745, lng: -38.523 });
   const [markers, setMarkers] = useState<Marker[]>([]);
   const [showRatingForm, setShowRatingForm] = useState(false);
+  const [showRatings, setShowRating] = useState(false);
   const [userID, setUserID] = useState(null)
   const [restroomID, setRestRoomID] = useState(null)
   const user = session
-//   let userID= null;
-//   let restroomID = null;
+  const [reviewElements, setReviewElements] = useState<JSX.Element[]>([]);
+
   
 
   useEffect(() => {
+    //grabs users ip address to get bathrooms nearby for later use
     if (!("geolocation" in navigator)) {
       console.error("Geolocation not supported");
       return;
@@ -49,6 +52,8 @@ function MyComponent({ session }) {
   });
 
   const getPins = useCallback(async () => {
+
+    //gets all the bathroom locations nearby
     const url = `/api/bathrooms?lat=${encodeURIComponent(center.lat)}&lng=${encodeURIComponent(center.lng)}`;
 
     try {
@@ -75,6 +80,7 @@ function MyComponent({ session }) {
   }, [center, getPins]);
 
     const checkUser = async () => {
+        //checks to see if theres a user with the same credentials as the one in our session
         if(user){
             // console.log('checking if in db')
             const res = await fetch("api/user",{
@@ -91,10 +97,9 @@ function MyComponent({ session }) {
             })
             const parse = await res.json()
             const userDet = parse.res[0].userID
-            // console.log("returned should be userid",userDet)
-            // userID = userDet
+
+            //if whats returned isn't null we have either found or created a user, setting that as current user
             setUserID(userDet)
-            console.log('user is now set as', userID)
         }else{
             console.timeLog('no need to check')
         }
@@ -102,35 +107,53 @@ function MyComponent({ session }) {
     }
 
   const showInfo = async (marker: Marker) => {
-    console.log(marker)
-    try {
-      const response = await fetch("api/bathStats",{
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: marker.name,
-            lat: marker.position.lat,
-            lng: marker.position.lng,
-            information: marker.information,
 
+    try {
+        //gets the bathoom stats
+        const response = await fetch("api/bathStats",{
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: marker.name,
+                lat: marker.position.lat,
+                lng: marker.position.lng,
+                information: marker.information,
+
+            })
+        });
+        const data = await response.json();
+        const restroomNumber = data.res;
+
+        //sets the current bathroom to the marker we clicked
+        setRestRoomID(restroomNumber)
+        if (userID !== null) {
+            setShowRatingForm(true);
+        }
+
+        //using the current bathroom we set, we grab all the reviews associated with it
+        const url = `/api/reviews?restroomID=${encodeURIComponent(restroomNumber)}`
+        const res = await fetch(url)
+        const parse = await res.json()
+        const reviews = parse.res
+
+        //reviews is the raw data, we turn the raw data reviews into review components
+        const reviewArray: JSX.Element[] = []
+        reviews.forEach((review)=>{
+          reviewArray.push(<BathroomReview rating={review.rating} comment={review.comment} dateCreated={review.created_at}/>)
         })
-      });
-      const data = await response.json();
-      const restroomNumber = data.res;
-    //   console.log('back in the frontend after clicking and heres the results', restroomNumber)
-    //   restroomID=restroomNumber
-      setRestRoomID(restroomNumber)
-      console.log('signed in as',userID, 'with bathroomNumber', restroomID)
-      if (userID !== null) {
-        setShowRatingForm(true);
-      }
+
+
+        setShowRating(true)
+        setReviewElements(reviewArray)
     }catch (error) {
         console.error("Error fetching bathroom stats", error);
 
     }
+        
   }
+  
 
   return isLoaded ? (
     <div>
@@ -144,7 +167,12 @@ function MyComponent({ session }) {
           </MarkerF>
         ))}
       </GoogleMap>
+
+      {/* makes a form to input review when you click a marker */}
       {showRatingForm && userID && <RatingForm userID={userID} restroomID={restroomID}/>}
+
+      {/* renders all the reviews of a certian marker/bathroom */}
+      {showRatings && reviewElements}
     </div>
   ) : <p>Loading map...</p>;
 }

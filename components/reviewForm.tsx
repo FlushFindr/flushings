@@ -1,6 +1,8 @@
 "use client"
 import React, { useState } from 'react';
 
+
+//form for inserting a review for a certain bathroom
 function RatingForm( {userID, restroomID} ) {
     const [rating, setRating] = useState('');
     const [comment, setComment] = useState('');
