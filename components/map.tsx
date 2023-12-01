@@ -4,8 +4,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { GoogleMap, MarkerF, InfoWindowF, useJsApiLoader } from "@react-google-maps/api";
 import RatingForm from "./reviewForm";
 import BathroomReview from "./bathroomReview";
+import BathStats from "./bathStats";
 
-const containerStyle = { width: '800px', height: '600px' };
+const containerStyle = { width: '800px', height: '600px', borderRadius: '30px' };
 
 interface Marker {
   name: string;
@@ -26,6 +27,7 @@ function MyComponent({ session }) {
   const [restroomID, setRestRoomID] = useState(null)
   const user = session
   const [reviewElements, setReviewElements] = useState<JSX.Element[]>([]);
+  const [bathStatElements, setBathStatsElements] = useState<JSX.Element>();
 
   
 
@@ -48,7 +50,8 @@ function MyComponent({ session }) {
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.GOOGLEMAPS_KEY as string,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLEMAPS_KEY as string,
+
   });
 
   const getPins = useCallback(async () => {
@@ -127,7 +130,9 @@ function MyComponent({ session }) {
         const restroomNumber = data.res;
 
         //sets the current bathroom to the marker we clicked
-        setRestRoomID(restroomNumber)
+        setRestRoomID(restroomNumber.restroomID)
+        const bathStats = <BathStats name={restroomNumber.name} location={restroomNumber.location}/>
+        console.log('bathrstats in the front', restroomNumber)
         if (userID !== null) {
             setShowRatingForm(true);
         }
@@ -143,10 +148,10 @@ function MyComponent({ session }) {
         reviews.forEach((review)=>{
           reviewArray.push(<BathroomReview rating={review.rating} comment={review.comment} dateCreated={review.created_at}/>)
         })
-
-
-        setShowRating(true)
+        setBathStatsElements(bathStats)
         setReviewElements(reviewArray)
+        setShowRating(true)
+
     }catch (error) {
         console.error("Error fetching bathroom stats", error);
 
@@ -169,6 +174,7 @@ function MyComponent({ session }) {
       </GoogleMap>
 
       {/* makes a form to input review when you click a marker */}
+      {showRatings && bathStatElements}
       {showRatingForm && userID && <RatingForm userID={userID} restroomID={restroomID}/>}
 
       {/* renders all the reviews of a certian marker/bathroom */}
