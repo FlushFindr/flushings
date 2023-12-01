@@ -11,9 +11,9 @@ function UserReview({ userID, details }) {
     };
 
     return (
-        edit ? (
-            <RatingForm userID={userID} restroomID={restroomID}/>
-        ) : (
+        // edit ? (
+        //     // <RatingForm userID={userID} restroomID={restroomID}/>
+        // ) : (
             <div className="card bg-base-100 shadow-xl m-4">
                 <div className="card-body">
                     <h2 className="card-title">
@@ -28,7 +28,7 @@ function UserReview({ userID, details }) {
                     <button className="btn btn-primary" onClick={toggleEdit}>Edit</button>
                 </div>
             </div>
-        )
+        // )
     );
 }
 
