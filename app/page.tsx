@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth';
 import { redirect } from "next/navigation";
 import { authConfig } from '@/lib/auth';
 import MyComponent from '@/components/map';
+import MainComponent from '@/components/mainComponent';
 
 export default async function Signin() {
   const session = await getServerSession(authConfig);
@@ -24,7 +25,7 @@ export default async function Signin() {
           {session ? <Signout /> : <GoogleSignInButton />}
         </div>
         <div className="mt-6">
-          <MyComponent session={session}/>
+          <MainComponent session={session}/>
         </div>
       </div>
     </main>

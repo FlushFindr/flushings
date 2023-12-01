@@ -18,34 +18,18 @@ interface Marker {
   information: {};
 }
 
-function MyComponent({ session }) {
-  const [center, setCenter] = useState({ lat: -3.745, lng: -38.523 });
+function Map({ center, userID }) {
+  // const [center, setCenter] = useState({ lat: -3.745, lng: -38.523 });
   const [markers, setMarkers] = useState<Marker[]>([]);
   const [showRatingForm, setShowRatingForm] = useState(false);
   const [showRatings, setShowRating] = useState(false);
-  const [userID, setUserID] = useState(null)
+  // const [userID, setUserID] = useState(null)
   const [restroomID, setRestRoomID] = useState(null)
-  const user = session
+  // const user = session
   const [reviewElements, setReviewElements] = useState<JSX.Element[]>([]);
   const [bathStatElements, setBathStatsElements] = useState<JSX.Element>();
 
-  
 
-  useEffect(() => {
-    //grabs users ip address to get bathrooms nearby for later use
-    if (!("geolocation" in navigator)) {
-      console.error("Geolocation not supported");
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => setCenter({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      }),
-      (error) => console.error("Geolocation error:", error)
-    );
-  }, []);
 
 
   const { isLoaded } = useJsApiLoader({
@@ -78,36 +62,10 @@ function MyComponent({ session }) {
   useEffect(() => {
     if (center.lat !== -3.745 && center.lng !== -38.523) {
       getPins();
-      checkUser();
+      // checkUser();
     }
   }, [center, getPins]);
 
-    const checkUser = async () => {
-        //checks to see if theres a user with the same credentials as the one in our session
-        if(user){
-            // console.log('checking if in db')
-            const res = await fetch("api/user",{
-                method:"POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    user: {
-                        username: user.user.name,
-                        email: user.user.email,
-                    }
-                })
-            })
-            const parse = await res.json()
-            const userDet = parse.res[0].userID
-
-            //if whats returned isn't null we have either found or created a user, setting that as current user
-            setUserID(userDet)
-        }else{
-            console.timeLog('no need to check')
-        }
-
-    }
 
   const showInfo = async (marker: Marker) => {
 
@@ -165,7 +123,7 @@ function MyComponent({ session }) {
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={12}
+        zoom={15}
       >
         {markers.map((marker, index) => (
           <MarkerF key={index} position={marker.position} onClick={()=>showInfo(marker)}>
@@ -183,5 +141,5 @@ function MyComponent({ session }) {
   ) : <p>Loading map...</p>;
 }
 
-export default React.memo(MyComponent);
+export default Map;
 
