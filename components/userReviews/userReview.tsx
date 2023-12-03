@@ -2,9 +2,9 @@ import { useState } from "react";
 import RatingForm from "../map/reviewForm";
 import EditReviewForm from "./editReviewForm";
 
-function UserReview({ userID, details }) {
+function UserReview({ userID, details, onDelete }) {
     const { restroomName, rating, comment, restroomID } = details;
-    // console.log('each reviews details',restroomName);
+    console.log('each reviews details',details);
     const [restroomN, saveRestRoomName]= useState(restroomName)
     // saveRestRoomName(restroomName)
     const [ratingEdit, editRating] = useState(rating);
@@ -45,7 +45,16 @@ function UserReview({ userID, details }) {
                     <p>
                         <strong>Comment:</strong> {commentEdit}
                     </p>
+                    <h2>
+
+                    <button 
+                        className="btn btn-error small-button" 
+                        onClick={() => onDelete(details.reviewID)}>
+                        Delete
+                    </button>
+
                     <button className="btn btn-primary" onClick={toggleEdit}>Edit</button>
+                    </h2>
                 </div>
             </div>
         )

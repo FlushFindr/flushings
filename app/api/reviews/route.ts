@@ -6,15 +6,17 @@ export async function POST(request: NextRequest){
         const body = await request.json();
 
         //body: JSON.stringify({ userID, restroomID, rating, comment }),
-        const {userID, restroomID, rating, comment} = body
+        const {userID, restroomID, rating, comment, location} = body
         console.log('trying to insert this review',userID,restroomID,rating,comment)
         const res = await db.query(
-            `INSERT INTO reviews (restroomID,rating,comment,userID)
-            SELECT * FROM (SELECT ? AS restroomID, ? AS rating, ? AS comment, ? AS userID) AS tmp
+            `INSERT INTO reviews (restroomID, rating, comment, userID, restroomName)
+            SELECT ? AS restroomID, ? AS rating, ? AS comment, ? AS userID, ? AS restroomName
+            FROM DUAL
             WHERE NOT EXISTS (
                 SELECT 1 FROM reviews WHERE restroomID = ? AND userID = ?
-            ) LIMIT 1;`
-        ,[restroomID,rating,comment, userID, restroomID, userID])
+            ) LIMIT 1;`,
+            [restroomID, rating, comment, userID, location, restroomID, userID]
+        );
 
         if (res[0].affectedRows === 0) {
             // No new row was inserted - a review by this user for this restroom already exists

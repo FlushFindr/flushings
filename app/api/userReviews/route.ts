@@ -54,4 +54,23 @@ export async function PUT(request: NextRequest){
         }))
     }
 }
+export async function DELETE(request: NextRequest){
+    const searchParams = request.nextUrl.searchParams;
+    const reviewID = searchParams.get('reviewID')
+    console.log('attempting to delete review',reviewID)
+    const query = `DELETE FROM reviews WHERE reviewID=?`
+    try {
+        const res = await db.query(query,[reviewID])
+        console.log(res)
+        return new Response(JSON.stringify({
+            status:200,
+            res:"deleted"
+        }))
+    } catch (error) {
+        return new Response(JSON.stringify({
+            status:400,
+            error:"couldnt delete"
+        }))
+    }
+}
 

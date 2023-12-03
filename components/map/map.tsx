@@ -19,13 +19,11 @@ interface Marker {
 }
 
 function Map({ center, userID }) {
-  // const [center, setCenter] = useState({ lat: -3.745, lng: -38.523 });
   const [markers, setMarkers] = useState<Marker[]>([]);
   const [showRatingForm, setShowRatingForm] = useState(false);
   const [showRatings, setShowRating] = useState(false);
-  // const [userID, setUserID] = useState(null)
   const [restroomID, setRestRoomID] = useState(null)
-  // const user = session
+  const [restroomLocation, setRestroomLocation] = useState(null)
   const [reviewElements, setReviewElements] = useState<JSX.Element[]>([]);
   const [bathStatElements, setBathStatsElements] = useState<JSX.Element>();
 
@@ -89,6 +87,7 @@ function Map({ center, userID }) {
 
         //sets the current bathroom to the marker we clicked
         setRestRoomID(restroomNumber.restroomID)
+        setRestroomLocation(restroomNumber.location)
         const bathStats = <BathStats name={restroomNumber.name} location={restroomNumber.location}/>
         console.log('bathrstats in the front', restroomNumber)
         if (userID !== null) {
@@ -146,7 +145,7 @@ function Map({ center, userID }) {
       {showRatings && bathStatElements}
       {showRatings && reviewElements}
       {showRatingForm && userID && (
-        <RatingForm userID={userID} restroomID={restroomID} onNewReview={addNewReview} />
+        <RatingForm userID={userID} location={restroomLocation} restroomID={restroomID} onNewReview={addNewReview} />
       )}
 
       {/* renders all the reviews of a certian marker/bathroom */}

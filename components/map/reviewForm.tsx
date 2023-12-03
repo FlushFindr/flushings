@@ -63,7 +63,7 @@
 
 import React, { useState } from 'react';
 
-function RatingForm({ userID, restroomID, onNewReview }) {
+function RatingForm({ userID, restroomID, location ,onNewReview }) {
     const [rating, setRating] = useState('');
     const [comment, setComment] = useState('');
 
@@ -76,7 +76,7 @@ function RatingForm({ userID, restroomID, onNewReview }) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userID, restroomID, rating, comment }),
+            body: JSON.stringify({ userID, restroomID, rating, comment, location }),
         });
 
         const ans = await response.json()
