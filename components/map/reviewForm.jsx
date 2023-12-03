@@ -1,8 +1,8 @@
-"use client"
+
 
 import React, { useState } from 'react';
 
-function EditReviewForm({ userID, restroomID, setEdit, editRatingCB, editCommentCB }) {
+function RatingForm({ userID, restroomID, location ,onNewReview }) {
     const [rating, setRating] = useState('');
     const [comment, setComment] = useState('');
 
@@ -10,24 +10,33 @@ function EditReviewForm({ userID, restroomID, setEdit, editRatingCB, editComment
         event.preventDefault();
 
         // Your submit logic here
-        const response = await fetch('api/userReviews', {
-            method: 'PUT',
+        const response = await fetch('api/reviews', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userID, restroomID, rating, comment }),
+            body: JSON.stringify({ userID, restroomID, rating, comment, location }),
         });
-        editRatingCB(rating)
-        editCommentCB(comment)
-        setEdit(false)
-        console.log('why it fail',response)
-        if (response.ok) {
-            console.log('Review submitted successfully');
-            // Handle successful submission (e.g., clear form, show message)
-        } else {
-            console.error('Failed to submit review');
-            // Handle errors
+
+        const ans = await response.json()
+        // console.log(ans)
+        if (ans.status==200){
+
+            onNewReview({
+                rating,
+                comment
+            })
+        }else if(ans.status==201){
+            alert('You already reviewed this bathroom')
         }
+
+        // if (response.ok) {
+        //     // console.log('Review submitted successfully');
+        //     // Handle successful submission (e.g., clear form, show message)
+        // } else {
+        //     console.error('Failed to submit review');
+        //     // Handle errors
+        // }
     };
 
     return (
@@ -64,7 +73,7 @@ function EditReviewForm({ userID, restroomID, setEdit, editRatingCB, editComment
     );
 }
 
-export default EditReviewForm;
+export default RatingForm;
 
 
 

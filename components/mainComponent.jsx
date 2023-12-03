@@ -52,9 +52,10 @@ function MainComponent({ session }) {
 
             //if whats returned isn't null we have either found or created a user, setting that as current user
             setUserID(userDet)
-        }else{
-            console.log('no need to check')
         }
+        // }else{
+        //     console.log('no need to check')
+        // }
 
     }
     const getReviews = async () => {
@@ -63,12 +64,13 @@ function MainComponent({ session }) {
 
     return (
         <div>
-            {showReviews ? <button onClick={getReviews}
+            {session && (showReviews ? <button onClick={getReviews}
             className="w-full flex items-center font-semibold justify-center h-14 px-6 mt-4 text-xl  transition-colors duration-300 bg-white border-2 border-black text-black rounded-lg focus:shadow-outline hover:bg-slate-200"
             >Show Map</button> 
             : <button onClick={getReviews}
             className="w-full flex items-center font-semibold justify-center h-14 px-6 mt-4 text-xl  transition-colors duration-300 bg-white border-2 border-black text-black rounded-lg focus:shadow-outline hover:bg-slate-200"
-            >Your Reviews</button>}
+            >Your Reviews</button>)}
+            
             {showReviews ? <UserReviews userID={userID}/> : <Map center={center} userID={userID}/> }
         </div>
     );

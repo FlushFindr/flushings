@@ -4,7 +4,7 @@ import EditReviewForm from "./editReviewForm";
 
 function UserReview({ userID, details, onDelete }) {
     const { restroomName, rating, comment, restroomID } = details;
-    console.log('each reviews details',details);
+    // console.log('each reviews details',details);
     const [restroomN, saveRestRoomName]= useState(restroomName)
     // saveRestRoomName(restroomName)
     const [ratingEdit, editRating] = useState(rating);
@@ -17,11 +17,11 @@ function UserReview({ userID, details, onDelete }) {
     };
 
     const editRatingCB = (ratingP) => {
-        console.log('update sate for rating',ratingP);
+        // console.log('update sate for rating',ratingP);
         editRating(ratingP)
     }
     const editCommentCB = (commentP)=>{
-        console.log('update sate for comment',commentP);
+        // console.log('update sate for comment',commentP);
         editComment(commentP)
     }
 

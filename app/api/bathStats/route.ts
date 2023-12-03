@@ -32,7 +32,7 @@ export async function POST(request: NextRequest){
             }
             ))
         } catch (error) {
-            console.log('failed to find back')
+            // console.log('failed to find back')
             return new Response(JSON.stringify({
                 status:400,
                 err: error

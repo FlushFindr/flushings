@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/map/reviewForm.jsx", "components/map/map.jsx", "components/map/bathStats.jsx", "components/map/bathroomReview.jsx", "components/mainComponent.jsx", "components/userReviews/editReviewForm.jsx", "components/userReviews/userReview.jsx", "components/userReviews/userReviews.jsx", "components/authButtons.jsx"],
   "exclude": ["node_modules"]
 }

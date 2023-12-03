@@ -16,14 +16,21 @@ export default async function Signin() {
         <h1 className="text-4xl font-bold text-gray-400 mb-4">
           FlushFindr
         </h1>
+        <h2>
         {session && (
+
           <p className="text-gray-400">
             Welcome: {session?.user?.email}
           </p>
         )}
-        <div className="my-4">
+            <div className="my-4">
           {session ? <Signout /> : <GoogleSignInButton />}
         </div>
+
+        </h2>
+        {/* <div className="my-4">
+          {session ? <Signout /> : <GoogleSignInButton />}
+        </div> */}
         <div className="mt-6">
           <MainComponent session={session}/>
         </div>

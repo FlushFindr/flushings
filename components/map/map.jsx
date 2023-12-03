@@ -8,31 +8,33 @@ import BathStats from "./bathStats";
 
 const containerStyle = { width: '800px', height: '600px', borderRadius: '30px' };
 
-interface Marker {
-  name: string;
-  position: {
-    lat: number;
-    lng: number;
-  };
-  direction: string;
-  information: {};
-}
+// interface Marker {
+//   name: string;
+//   position: {
+//     lat: number;
+//     lng: number;
+//   };
+//   direction: string;
+//   information: {};
+// }
 
 function Map({ center, userID }) {
-  const [markers, setMarkers] = useState<Marker[]>([]);
+  const [markers, setMarkers] = useState([]);
+  // const [markers, setMarkers] = useState<Marker[]>([]);
   const [showRatingForm, setShowRatingForm] = useState(false);
   const [showRatings, setShowRating] = useState(false);
   const [restroomID, setRestRoomID] = useState(null)
   const [restroomLocation, setRestroomLocation] = useState(null)
-  const [reviewElements, setReviewElements] = useState<JSX.Element[]>([]);
-  const [bathStatElements, setBathStatsElements] = useState<JSX.Element>();
-
+  const [reviewElements, setReviewElements] = useState([]);
+  const [bathStatElements, setBathStatsElements] = useState([]);
+  // const [reviewElements, setReviewElements] = useState<JSX.Element[]>([]);
+  // const [bathStatElements, setBathStatsElements] = useState<JSX.Element>();
 
 
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLEMAPS_KEY as string,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLEMAPS_KEY,
 
   });
 
@@ -65,7 +67,7 @@ function Map({ center, userID }) {
   }, [center, getPins]);
 
 
-  const showInfo = async (marker: Marker) => {
+  const showInfo = async (marker) => {
 
     try {
         //gets the bathoom stats
@@ -89,7 +91,7 @@ function Map({ center, userID }) {
         setRestRoomID(restroomNumber.restroomID)
         setRestroomLocation(restroomNumber.location)
         const bathStats = <BathStats name={restroomNumber.name} location={restroomNumber.location}/>
-        console.log('bathrstats in the front', restroomNumber)
+        // console.log('bathrstats in the front', restroomNumber)
         if (userID !== null) {
             setShowRatingForm(true);
         }
@@ -101,7 +103,7 @@ function Map({ center, userID }) {
         const reviews = parse.res
 
         //reviews is the raw data, we turn the raw data reviews into review components
-        const reviewArray: JSX.Element[] = []
+        const reviewArray = []
         reviews.forEach((review, index)=>{
           reviewArray.push(<BathroomReview key={`review-${index}`} rating={review.rating} comment={review.comment} dateCreated={review.created_at}/>)
         })

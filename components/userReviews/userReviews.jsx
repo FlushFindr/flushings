@@ -4,7 +4,8 @@ import { useEffect, useState } from "react"
 import UserReview from "./userReview"
 
 function UserReviews({userID}){
-    const [reviewElements, setReviewElements] = useState<JSX.Element[]>([]);
+    // const [reviewElements, setReviewElements] = useState<JSX.Element[]>([]);
+    const [reviewElements, setReviewElements] = useState([]);
 
     const handleDelete = async (reviewID) => {
         try {
@@ -30,7 +31,7 @@ function UserReviews({userID}){
         const reviews = await res.json()
         // console.log(reviews)
         reviews.res.forEach((review, index) => {
-            console.log(review);
+            // console.log(review);
             reviewsComponents.push(
                 <UserReview key={`review-${index}`} userID={userID} details={review} onDelete={handleDelete} />
             );
