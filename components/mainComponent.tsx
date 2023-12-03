@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import Map from "./map"; // assuming MyComponent is the correct import
-import UserReviews from "./userReviews";
+import Map from "./map/map"; // assuming MyComponent is the correct import
+import UserReviews from "./userReviews/userReviews";
 
 function MainComponent({ session }) {
     const [center, setCenter] = useState({ lat: -3.745, lng: -38.523 });
@@ -53,7 +53,7 @@ function MainComponent({ session }) {
             //if whats returned isn't null we have either found or created a user, setting that as current user
             setUserID(userDet)
         }else{
-            console.timeLog('no need to check')
+            console.log('no need to check')
         }
 
     }

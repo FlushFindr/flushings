@@ -4,7 +4,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { getServerSession } from 'next-auth';
 import { redirect } from "next/navigation";
 import { authConfig } from '@/lib/auth';
-import MyComponent from '@/components/map';
+import MyComponent from '@/components/map/map';
 import MainComponent from '@/components/mainComponent';
 
 export default async function Signin() {

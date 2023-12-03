@@ -96,15 +96,15 @@ function Map({ center, userID }) {
         }
 
         //using the current bathroom we set, we grab all the reviews associated with it
-        const url = `/api/reviews?restroomID=${encodeURIComponent(restroomNumber)}`
+        const url = `/api/reviews?restroomID=${encodeURIComponent(restroomNumber.restroomID)}`
         const res = await fetch(url)
         const parse = await res.json()
         const reviews = parse.res
 
         //reviews is the raw data, we turn the raw data reviews into review components
         const reviewArray: JSX.Element[] = []
-        reviews.forEach((review)=>{
-          reviewArray.push(<BathroomReview rating={review.rating} comment={review.comment} dateCreated={review.created_at}/>)
+        reviews.forEach((review, index)=>{
+          reviewArray.push(<BathroomReview key={`review-${index}`} rating={review.rating} comment={review.comment} dateCreated={review.created_at}/>)
         })
         setBathStatsElements(bathStats)
         setReviewElements(reviewArray)
@@ -115,6 +115,17 @@ function Map({ center, userID }) {
 
     }
         
+  }
+  const addNewReview=(newReview)=>{
+    setReviewElements(prevReviews => [
+      ...prevReviews,
+      <BathroomReview
+        key={`review-${prevReviews.length}`}
+        rating={newReview.rating}
+        comment={newReview.comment}
+        dateCreated={new Date().toISOString()} // Assuming you want to set the current date as the creation date
+      />
+    ]);
   }
   
 
@@ -133,10 +144,12 @@ function Map({ center, userID }) {
 
       {/* makes a form to input review when you click a marker */}
       {showRatings && bathStatElements}
-      {showRatingForm && userID && <RatingForm userID={userID} restroomID={restroomID}/>}
+      {showRatings && reviewElements}
+      {showRatingForm && userID && (
+        <RatingForm userID={userID} restroomID={restroomID} onNewReview={addNewReview} />
+      )}
 
       {/* renders all the reviews of a certian marker/bathroom */}
-      {showRatings && reviewElements}
     </div>
   ) : <p>Loading map...</p>;
 }

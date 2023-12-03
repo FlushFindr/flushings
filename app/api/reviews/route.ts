@@ -7,7 +7,7 @@ export async function POST(request: NextRequest){
 
         //body: JSON.stringify({ userID, restroomID, rating, comment }),
         const {userID, restroomID, rating, comment} = body
-        console.log(userID,restroomID,rating,comment)
+        console.log('trying to insert this review',userID,restroomID,rating,comment)
         const res = await db.query(
             `INSERT INTO reviews (restroomID,rating,comment,userID)
             SELECT * FROM (SELECT ? AS restroomID, ? AS rating, ? AS comment, ? AS userID) AS tmp
@@ -16,8 +16,16 @@ export async function POST(request: NextRequest){
             ) LIMIT 1;`
         ,[restroomID,rating,comment, userID, restroomID, userID])
 
-        // const reviews = await db.query("SELECT * FROM reviews")
-        // console.log(reviews)
+        if (res[0].affectedRows === 0) {
+            // No new row was inserted - a review by this user for this restroom already exists
+
+            return new Response(JSON.stringify({
+                status:201
+            }))
+  
+        }
+        const reviews = await db.query("SELECT * FROM reviews")
+
         return new Response(JSON.stringify({
             status:200,
         }))
@@ -33,13 +41,14 @@ export async function POST(request: NextRequest){
 export async function GET(request: NextRequest){
     const searchParams = request.nextUrl.searchParams;
     const restroomID = searchParams.get('restroomID')
+
     // console.log('got the request for this bathroom', restroomID)
     try {
         const res = await db.query(
             `SELECT * FROM reviews
             WHERE reviews.restroomID=?`
             ,[restroomID])
-        console.log("found all the reviews for the specific bathroom", res)
+        // console.log("found all the reviews for the specific bathroom", res)
         return new Response(JSON.stringify({
             status:200,
             res: res[0]

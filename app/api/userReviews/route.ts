@@ -22,3 +22,36 @@ export async function GET(request: NextRequest){
         }))
     }
 }
+
+export async function PUT(request: NextRequest){
+    const body = await request.json()
+    
+    const {userID, restroomID, rating, comment} = body
+
+    const updateQuery = `
+    UPDATE reviews
+    SET rating = ?, comment = ?
+    WHERE restroomID = ? AND userID = ?;`;
+    // console.log('got the request for this bathroom', restroomID)
+    try {
+        console.log('trying to edit', userID, restroomID,rating, comment)
+        const res = await db.query(updateQuery,[rating, comment, restroomID, userID])
+
+        console.log(res)
+        //     `SELECT * FROM reviews
+        //     WHERE reviews.userID=?`
+        //     ,[userID])
+        // console.log("found all the reviews for the specific user", res)
+        return new Response(JSON.stringify({
+            status:200,
+            res: res
+        }))
+        
+    } catch (error) {
+        return new Response(JSON.stringify({
+            status:400,
+            err:"failed to update the bathroom"
+        }))
+    }
+}
+

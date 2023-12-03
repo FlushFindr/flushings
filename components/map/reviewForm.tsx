@@ -63,7 +63,7 @@
 
 import React, { useState } from 'react';
 
-function RatingForm({ userID, restroomID }) {
+function RatingForm({ userID, restroomID, onNewReview }) {
     const [rating, setRating] = useState('');
     const [comment, setComment] = useState('');
 
@@ -78,6 +78,18 @@ function RatingForm({ userID, restroomID }) {
             },
             body: JSON.stringify({ userID, restroomID, rating, comment }),
         });
+
+        const ans = await response.json()
+        console.log(ans)
+        if (ans.status==200){
+
+            onNewReview({
+                rating,
+                comment
+            })
+        }else if(ans.status==201){
+            alert('You already reviewed this bathroom')
+        }
 
         if (response.ok) {
             console.log('Review submitted successfully');
