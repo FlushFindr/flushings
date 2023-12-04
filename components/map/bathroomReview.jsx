@@ -6,7 +6,7 @@ function BathroomReview({ rating, comment, dateCreated }) {
               <p className="font-semibold">Rating: 
                   <span className={`badge ${rating >= 4 ? 'badge-success' : 'badge-warning'}`}>{rating}</span>
               </p>
-              <p className="italic">"{comment}"</p>
+              <p className="italic">&quot;{comment}&quot;</p> {/* Replace double quotes with HTML entities */}
           </div>
       </div>
   );

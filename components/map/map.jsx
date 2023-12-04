@@ -135,16 +135,19 @@ function Map({ center, userID }) {
 
   return isLoaded ? (
     <div>
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={15}
-      >
-        {markers.map((marker, index) => (
-          <MarkerF key={index} position={marker.position} onClick={()=>showInfo(marker)}>
-          </MarkerF>
-        ))}
-      </GoogleMap>
+      {markers.length > 0 ? (
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={center}
+          zoom={15}
+        >
+          {markers.map((marker, index) => (
+            <MarkerF key={index} position={marker.position} onClick={() => showInfo(marker)} />
+          ))}
+        </GoogleMap>
+      ) : (
+        <p>Loading map...</p>
+      )}
 
       {/* makes a form to input review when you click a marker */}
       {showRatings && bathStatElements}

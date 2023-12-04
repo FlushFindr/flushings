@@ -14,7 +14,7 @@ function MainComponent({ session }) {
         // Check user and update userID here if needed
         // For example, call a function to check the user and set userID
         checkUser()
-    }, [session, checkUser]);
+    }, [session]);
 
     // Geolocation logic can also be moved here if it affects other parts of your application
     useEffect(() => {
