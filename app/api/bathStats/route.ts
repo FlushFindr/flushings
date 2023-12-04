@@ -24,11 +24,18 @@ export async function POST(request: NextRequest){
                 WHERE restrooms.latitude=? AND restrooms.longitude=?
                 `
             , [roundLat, roundLng])
-    
-            // console.log("heres the bathroom you clicked from the backend", bathroomRet[0][0].restroomID)
+            
+            // console.log("heres the bathroom you clicked from the backend", bathroomRet[0][0].restroomID)\
+            const res = await db.query(`
+                SELECT AVG(rating) AS average_rating
+                FROM reviews
+                WHERE restroomID = ?;
+            `, [bathroomRet[0][0].restroomID])
+            console.log('avergae rating',res[0][0].average_rating)
             return new Response(JSON.stringify({
                 status:200,
-                res: bathroomRet[0][0]
+                res: bathroomRet[0][0],
+                avgRating: res[0][0].average_rating
             }
             ))
         } catch (error) {

@@ -86,11 +86,14 @@ function Map({ center, userID }) {
         });
         const data = await response.json();
         const restroomNumber = data.res;
+        const avgRating = data.avgRating
+        console.log('front avg',avgRating)
+        
 
         //sets the current bathroom to the marker we clicked
         setRestRoomID(restroomNumber.restroomID)
         setRestroomLocation(restroomNumber.location)
-        const bathStats = <BathStats name={restroomNumber.name} location={restroomNumber.location}/>
+        const bathStats = <BathStats name={restroomNumber.name} location={restroomNumber.location} avgRating={avgRating}/>
         // console.log('bathrstats in the front', restroomNumber)
         if (userID !== null) {
             setShowRatingForm(true);
