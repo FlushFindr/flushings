@@ -1,0 +1,40 @@
+stages:
+  - install
+  - build
+  - deploy
+
+variables:
+  NODE_VERSION: 18.x
+
+cache:
+  paths:
+    - node_modules/
+
+install_dependencies:
+  stage: install
+  image: node:$NODE_VERSION
+  script:
+    - npm install
+  artifacts:
+    paths:
+      - node_modules/
+
+build:
+  stage: build
+  image: node:$NODE_VERSION
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - .next/
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  image: node:$NODE_VERSION
+  script:
+    - echo "Deploying the application..."
+    # Add deployment scripts here, e.g., to deploy to a specific server or a service like Heroku, AWS, etc.
+  only:
+    - master
